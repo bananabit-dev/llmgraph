@@ -1,0 +1,13 @@
+[package]
+name = "llmgraph"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = {version = "0.12.23", features= ["json"]}
+serde = {version = "1.0.219", features = ["derive"]}
+serde_json = "1.0.142"
+async-trait = "0.1.89"
+tokio = {version = "1.47.1", features = ["full"]}
+regex = "1.10"
+futures = "0.3"
