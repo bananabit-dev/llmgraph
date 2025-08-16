@@ -2,6 +2,8 @@
 name = "llmgraph"
 version = "0.1.0"
 authors = ["bananabit-dev <bananabit@web.de>"]
+license = "MIT"
+license-file = "LICENSE"
 description = "This library provides a framework for building conversational AI applications with function calling capabilities using a graph-based architecture."
 edition = "2021"
 
