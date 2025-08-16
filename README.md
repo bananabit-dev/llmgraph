@@ -297,11 +297,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License.
 
-## Roadmap
-
-- [ ] Add support for parallel agent execution
-- [ ] Implement persistent graph state
-- [ ] Add more built-in tool types
-- [ ] Create a visual graph editor
-- [ ] Add support for streaming responses
-- [ ] Implement agent memory/context management
