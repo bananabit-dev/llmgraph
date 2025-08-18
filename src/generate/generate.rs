@@ -135,7 +135,7 @@ pub async fn generate_with_tools(
 ///
 /// # Returns
 /// * `Ok(LLMResponse)` - The full response including tool calls
-/// * `Err(reqwest::Error)` - If the API request fails
+/// * `Err(String)` - Error message with status information if the API request fails
 ///
 /// # Example
 /// ```rust,ignore
@@ -163,7 +163,7 @@ pub async fn generate_full_response(
     temperature: f32,
     messages: Vec<Message>,
     tools: Option<Vec<Tool>>
-) -> Result<LLMResponse, reqwest::Error> {
+) -> Result<LLMResponse, String> {
     let content_type: &str = "application/json";
 
     let mut headers = HeaderMap::new();
@@ -171,15 +171,19 @@ pub async fn generate_full_response(
     headers.insert(
         "authorization",
         HeaderValue::from_str(&format!("Bearer {}", api_key))
-            .expect("Failed to add api key to Bearer"),
+            .map_err(|e| format!("Failed to create auth header: {}", e))?,
     );
 
     headers.insert(
         "content-type",
-        HeaderValue::from_str(content_type).expect("Failed to add content-type")
+        HeaderValue::from_str(content_type)
+            .map_err(|e| format!("Failed to create content-type header: {}", e))?
     );
 
-    let client = Client::builder().default_headers(headers).build().expect("Can't build client");
+    let client = Client::builder()
+        .default_headers(headers)
+        .build()
+        .map_err(|e| format!("Failed to create HTTP client: {}", e))?;
 
     let chat_completion = ChatCompletion {
         model,
@@ -192,8 +196,19 @@ pub async fn generate_full_response(
         .post(base_url)
         .json(&chat_completion)
         .send()
-        .await?;
+        .await
+        .map_err(|e| format!("HTTP request failed: {}", e))?;
 
-    let res: LLMResponse = response.json().await?;
+    // Check if the response was successful
+    if !response.status().is_success() {
+        let status_code = response.status();
+        let error_text = response.text().await.unwrap_or_else(|_| "No error details".to_string());
+        return Err(format!("API request failed with status {}: {}", status_code, error_text));
+    }
+
+    let res: LLMResponse = response.json()
+        .await
+        .map_err(|e| format!("Failed to parse JSON response: {}", e))?;
+    
     Ok(res)
 }

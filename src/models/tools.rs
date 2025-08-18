@@ -127,12 +127,12 @@ pub struct ToolResultMessage {
     pub content: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct LLMResponse {
     pub choices: Vec<Choice>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Choice {
     pub message: Message,
     pub finish_reason: Option<String>,

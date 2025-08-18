@@ -1,6 +1,6 @@
 [package]
 name = "llmgraph"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["bananabit-dev <bananabit@web.de>"]
 license = "MIT"
 license-file = "LICENSE"
